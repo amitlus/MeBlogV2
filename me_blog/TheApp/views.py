@@ -90,7 +90,7 @@ class PostListView(ListView):
 
 
     def get_queryset(self):
-        return Post.objects.filter(published_date__lte=timezone.now()).order_by('-published_date')
+        return Post.objects.order_by('-create_date')
 
 class PostDetailView(DetailView):
     model = Post
@@ -148,11 +148,3 @@ def comment_remove(request, pk):
     post_pk = comment.post.pk #מוסיפים את השורה הזו כי אחרי שנמחק את התגובה כבר לא נדע מה הPK שלה היה..
     comment.delete()
     return redirect('TheApp:post_detail', pk=post_pk)
-
-
-
-@login_required
-def post_publish(request,pk):
-    post = get_object_or_404(Post, pk=pk)
-    post.publish() #מגדיר את הפבליש דייט לטיים זון נאו
-    return redirect('TheApp:post_detail', pk=pk)

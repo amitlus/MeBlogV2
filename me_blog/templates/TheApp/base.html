@@ -28,16 +28,14 @@
     <div class="fixed-top">
     <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark fixed-top">
       <div class="container">
-        <a class="navbar-brand" href="{% url 'TheApp:index' %}">ME-BLOG</a>
+        <a class="navbar-brand" href="{% url 'TheApp:index' %}">ME-POST</a>
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
           <ul class="navbar-nav ml-auto">
 
-            <li class="nav-item">
-              <a class="nav-link" href="#">Explore</a>
-            </li>
+
             {% if user.is_authenticated %}
                       <li><a class= 'nav-link' href="{% url 'logout' %}">Logout</a></li>
                       <li><a class="nav-link" href="{% url 'TheApp:post_list' %}">{{ user.username }}</a></li>
@@ -57,7 +55,7 @@
     <div class="fixed-bottom" id="bottom">
     <footer class="py-5 bg-dark">
       <div class="container">
-        <p class="m-0 text-center text-white">Copyright &copy; ME-BLOG 2020</p>
+        <p class="m-0 text-center text-white">Copyright &copy; ME-POST 2020</p>
       </div>
       <!-- /.container -->
     </footer>
