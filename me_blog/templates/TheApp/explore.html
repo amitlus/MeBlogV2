@@ -1,0 +1,11 @@
+{% extends "TheApp/base.html" %}
+{% load static %}
+{% block body_block %}
+
+<ol>
+  {% for blog in blogs %}
+  <h2><li><a href="{{blog.user.username}}">{{blog.user.username}}</a></li></h2>
+
+{% endfor %}
+</ol>
+{% endblock %}
