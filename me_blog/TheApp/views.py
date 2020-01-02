@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login, logout
-from django.views.generic import View, TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import (View, TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView)
 from. import models
 from TheApp.models import Post, Comment
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -86,6 +86,7 @@ def user_login(request):
 
 class PostListView(ListView):
     model = Post
+    context_object_name = 'thelist'
 
 
     def get_queryset(self):
@@ -96,28 +97,20 @@ class PostDetailView(DetailView):
 
 class CreatePostView(LoginRequiredMixin, CreateView):
     login_url = '/login/' #attribute של הmixin .. אם מישהו לא מחובר זה מפנה אותו להתחבר
-    redirect_field_name = 'TheApp/post_datail.html'
+    redirect_field_name = 'TheApp/post_detail.html'
     form_class = PostForm
     model = Post
 
 
 class PostUpdateView(LoginRequiredMixin, UpdateView):
     login_url = '/login/' #attribute של הmixin .. אם מישהו לא מחובר זה מפנה אותו להתחבר
-    redirect_field_name = 'TheApp/post_datail.html'
+    redirect_field_name = 'TheApp/post_detail.html'
     form_class = PostForm
     model = Post
 
 class PostDeleteView(LoginRequiredMixin, DeleteView):
     model = Post
-    success_url = reverse_lazy('post_list')
-
-class DraftListView(LoginRequiredMixin, ListView):
-    login_url = '/login/'
-    redirect_field_name = 'TheApp/post_list.html'
-    model = Post
-
-    def get_queryset(self):
-        return post.objects.filter(published_date__isnull=True).order_by('create_date')
+    success_url = reverse_lazy('TheApp:post_list')
 
 
 
@@ -141,17 +134,12 @@ def add_comment_to_post(request,pk):
             comment = form.save(commit=False)
             comment.post = post
             comment.save()
-            return redirect('post_datail', pk=post.pk)
-        else:
-            form = CommentForm()
-        return render (request, 'blog/comment_form.html', {'form':form})
+            return redirect('TheApp:post_detail', pk=post.pk)
+    else:
+        form = CommentForm()
+        return render(request, 'TheApp/comment_form.html', {'form':form})
 
 
-@login_required
-def comment_approve(request,pk):
-    comment = get_object_or_404(Comment, pk=pk)
-    comment.approve()
-    return redirect('post_detail', pk=comment.post.pk)
 
 
 @login_required
@@ -159,10 +147,12 @@ def comment_remove(request, pk):
     comment = get_object_or_404(Comment, pk=pk)
     post_pk = comment.post.pk #מוסיפים את השורה הזו כי אחרי שנמחק את התגובה כבר לא נדע מה הPK שלה היה..
     comment.delete()
-    return redirect('post_detail', pk=post_pk)
+    return redirect('TheApp:post_detail', pk=post_pk)
+
+
 
 @login_required
 def post_publish(request,pk):
     post = get_object_or_404(Post, pk=pk)
-    post.publish #מגדיר את הפבליש דייט לטיים זון נאו
-    return redirect('post_detail', pk=pk)
+    post.publish() #מגדיר את הפבליש דייט לטיים זון נאו
+    return redirect('TheApp:post_detail', pk=pk)
